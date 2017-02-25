@@ -18,6 +18,8 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements Identifiable<String>, Serializable {
 
+    private static final long serialVersionUID = 3320920352731466419L;
+
     @Id
     private String id;
     private String name;

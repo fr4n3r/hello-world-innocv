@@ -1,4 +1,4 @@
-package com.fran3r.users;
+package com.fran3r.users.controller;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

@@ -1,4 +1,4 @@
-package com.fran3r.users;
+package com.fran3r.users.controller;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

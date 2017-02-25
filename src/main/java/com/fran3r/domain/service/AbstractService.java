@@ -5,7 +5,6 @@ import org.springframework.hateoas.Identifiable;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
-import java.util.function.Consumer;
 /**
  * @author Fran Alonso @ byteflair.com
  *
@@ -43,7 +42,7 @@ public abstract class AbstractService<T extends Serializable & Identifiable<ID>,
         return saved;
     }
 
-    public void delete(ID id, Consumer<T> function) {
+    public void delete(ID id) {
         T current = get(id);
         if (current == null) {
             throw new RuntimeException("Couldn't delete null entity with id " + id);
@@ -53,7 +52,6 @@ public abstract class AbstractService<T extends Serializable & Identifiable<ID>,
         } catch (RuntimeException e) {
             throw new RuntimeException("Couldn't delete entity with id " + id, e);
         }
-        function.accept(current);
     }
 
     public T get(ID id) {
