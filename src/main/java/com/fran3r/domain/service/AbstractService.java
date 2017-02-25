@@ -8,10 +8,12 @@ import java.io.Serializable;
 import java.util.function.Consumer;
 /**
  * @author Fran Alonso @ byteflair.com
+ *
+ * This abstract service implements the basics of all services
  */
 public abstract class AbstractService<T extends Serializable & Identifiable<ID>, ID extends Serializable> {
 
-    public T create(T entity, Consumer<T> function) {
+    public T create(T entity) {
         Assert.isNull(entity.getId(), "Unable to create new entity with given id");
 
         T created;
@@ -22,14 +24,12 @@ public abstract class AbstractService<T extends Serializable & Identifiable<ID>,
             throw new RuntimeException("Couldn't create " + entity.getClass().getSimpleName() + " entity " + entity, e);
         }
 
-        function.accept(created);
-
         return created;
     }
 
     public abstract MongoRepository<T, ID> getRepository();
 
-    public T update(T entity, Consumer<T> function) {
+    public T update(T entity) {
         Assert.notNull(entity);
 
         T saved;
@@ -39,8 +39,6 @@ public abstract class AbstractService<T extends Serializable & Identifiable<ID>,
         } catch (RuntimeException e) {
             throw new RuntimeException("Couldn't update entity with id " + entity.getId(), e);
         }
-
-        function.accept(saved);
 
         return saved;
     }
@@ -67,6 +65,6 @@ public abstract class AbstractService<T extends Serializable & Identifiable<ID>,
             throw new RuntimeException("Couldn't get entity with id " + id, e);
         }
 
-        return entity; // entity puede devolver null
+        return entity; // entity can return null
     }
 }

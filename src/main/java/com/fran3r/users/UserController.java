@@ -28,6 +28,10 @@ public class UserController {
 
     public ResponseEntity<User> create(@RequestBody @Valid UserResource from, PersistentEntityResourceAssembler assembler){
 
+        User created = userService.create(User.builder()
+                                              .name(from.getName())
+                                              .birthDate(from.getBirthDate())
+                                              .build());
         return new ResponseEntity(assembler.toResource(created), HttpStatus.CREATED);
     }
 }
