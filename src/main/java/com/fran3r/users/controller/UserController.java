@@ -1,11 +1,10 @@
 package com.fran3r.users.controller;
 
-import com.fran3r.boundary.ResourceUtils;
 import com.fran3r.users.User;
 import com.fran3r.users.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -23,51 +22,46 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 public class UserController {
     private UserService userService;
-
     private UserResourceValidator validator;
+    private UserAssembler userAssembler;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.setValidator(validator);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/create")
-    public ResponseEntity<UserResource> create(@RequestBody @Valid UserResource form, PersistentEntityResourceAssembler assembler){
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<UserResource> create(@RequestBody @Valid UserResource form){
 
-        User created = userService.create(User.builder()
-                                              .name(form.getName())
-                                              .birthDate(form.getBirthDate())
-                                              .build());
-        return new ResponseEntity(assembler.toResource(created), HttpStatus.CREATED);
+        User created = userService.create(userAssembler.toEntity(form, null));
+
+        return new ResponseEntity(userAssembler.toResource(created), HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/get/{id}")
-    public ResponseEntity<UserResource> get(String id, PersistentEntityResourceAssembler assembler){
+    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
+    public ResponseEntity<UserResource> get(@PathVariable String id){
         User user = userService.get(id);
-        return new ResponseEntity(assembler.toResource(user), HttpStatus.FOUND);
+        return new ResponseEntity(userAssembler.toResource(user), HttpStatus.FOUND);
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/getall")
-    public ResponseEntity<List<UserResource>> getAll(PersistentEntityResourceAssembler assembler){
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<PagedResources<UserResource>> getAll(){
         List<User> userList = userService.getAll();
 
-        return new ResponseEntity(userList.stream().map(assembler::toResource).collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity(userList.stream().map(userAssembler::toResource).collect(Collectors.toList()), HttpStatus.FOUND);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, path = "/update")
-    public ResponseEntity<UserResource> update(@RequestBody @Valid UserResource form, PersistentEntityResourceAssembler assembler){
+    @RequestMapping(method = RequestMethod.PUT, path = "/{id}")
+    public ResponseEntity<UserResource> update(@RequestBody @Valid UserResource form, @PathVariable String id){
 
-        //Get the id from the link
-        String id =  ResourceUtils.getIdFromRel(form, "user");
-        User updated = userService.update(User.builder()
-                                            .id(id)
-                                            .name(form.getName())
-                                            .birthDate(form.getBirthDate()).build());
-        return new ResponseEntity(updated, HttpStatus.OK);
+        User user = userAssembler.toEntity(form, id);
+
+        User updated = userService.update(user);
+        return new ResponseEntity(userAssembler.toResource(updated), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, path = "/delete/{id}")
-    public ResponseEntity delete(String id){
+    @RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
+    public ResponseEntity delete(@PathVariable String id){
         userService.delete(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

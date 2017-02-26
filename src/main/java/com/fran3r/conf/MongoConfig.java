@@ -9,13 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Fran Alonso @ byteflair.com
@@ -46,18 +41,9 @@ public class MongoConfig extends AbstractMongoConfiguration  {
                                MongoClientOptions.builder().connectTimeout(timeout).build());
     }
 
-    @Override
-    public CustomConversions customConversions() {
-        return new CustomConversions(getConverters());
-    }
 
-    public List<Converter> getConverters() {
-        List converters = new ArrayList<>();
-        //converters.addAll(TimeConverters.getConverters());
-        //converters.addAll(JTSConverters.getConverters());
 
-        return converters;
-    }
+
 
 
 
