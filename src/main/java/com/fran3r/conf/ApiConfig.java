@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -17,6 +18,7 @@ import java.util.Arrays;
  * @author Fran Alonso @ byteflair.com
  */
 @Configuration
+@EnableAsync
 public class ApiConfig extends RepositoryRestConfigurerAdapter {
     /**
      * Configurar el sistema de mapeo de objetos a JSON y viceversa.
